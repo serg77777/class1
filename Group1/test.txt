@@ -1,0 +1,4 @@
+Command-E  - Switch editor window
+Command-F6 - Quick Switch for Editors
+Command-F7 - Quick Switch for Views
+Command-I  - Project Info
