@@ -2,8 +2,9 @@ package lesson140609;
 
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.concurrent.Executor;
 
-public class Worker {
+public class Worker implements Executor {
 	
 	final private static Runnable POISON_PILL = new Runnable() {
 		@Override
@@ -44,6 +45,7 @@ public class Worker {
 		new Thread(new WorkerBody()).start();
 	}
 	
+	@Override
 	public void execute(Runnable task) {
 		synchronized (tasks) {
 			tasks.add(task);
