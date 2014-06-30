@@ -32,15 +32,15 @@ public class NonFair {
 			}
 		}
 		
-		new Thread(new Task()).start();
+		new Thread(new Task(), "t1").start();
 		Utils.pause(100);
-		new Thread(new Task()).start();
+		new Thread(new Task(), "t2").start();
 		Utils.pause(100);
-		new Thread(new Task()).start();
+		new Thread(new Task(), "t3").start();
 		Utils.pause(100);
-		new Thread(new Task()).start();
+		new Thread(new Task(), "t4").start();
 		Utils.pause(100);
-		new Thread(new Task()).start();
+		new Thread(new Task(), "t5").start();
 		
 	}
 
