@@ -1,6 +1,6 @@
 package tetris;
 
-public class Logic {
+public class Logic implements EventProcessor {
 
 	public State state;
 
@@ -8,6 +8,7 @@ public class Logic {
 		this.state = state;
 	}
 	
+	@Override
 	public void moveLeft() {
 		if (state.figureColumn == 0) {
 			return;
@@ -15,6 +16,7 @@ public class Logic {
 		state.moveFigureLeft();
 	}
 	
+	@Override
 	public void moveRight() {
 		if (state.figureColumn == 
 				state.field.box[0].length
@@ -24,18 +26,27 @@ public class Logic {
 		state.moveFigureRight();
 	}
 	
+	@Override
 	public void drop() {
 		
 	}
 	
+	@Override
 	public void rotate() {
 		
 	}
 	
+	@Override
 	public void moveDown() {
-		
+		if (!state.canMoveDown()) {
+			state.pasteFigure();
+			state.nextFigure();
+			return;
+		}
+		state.moveFigureDown();
 	}
 
+	@Override
 	public void newGame() {
 		state.init();
 	}

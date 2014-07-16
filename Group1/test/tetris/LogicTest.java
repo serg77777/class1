@@ -58,4 +58,63 @@ public class LogicTest {
 		
 	}
 	
+	@Test
+	public void testMoveDown() throws Exception {
+		int oldFigureRow = _state.figureRow;
+		_logic.moveDown();
+		assertEquals(oldFigureRow + 1, _state.figureRow);
+	}
+	
+	@Test
+	public void testMoveDownInsideBox() throws Exception {
+		prepareFigureAtBottom();
+		
+		_logic.moveDown();
+		int bottom = _state.field.box.length - 1;
+		assertEquals(1, _state.field.box[bottom][0]);
+		assertEquals(1, _state.field.box[bottom][1]);
+		assertEquals(1, _state.field.box[bottom][2]);
+		assertEquals(1, _state.field.box[bottom][3]);
+	}
+	
+	@Test
+	public void testNextFigureAppears() throws Exception {
+		prepareFigureAtBottom();
+		_logic.moveDown();
+		assertEquals(0, _state.figureRow);
+	}
+
+	private void prepareFigureAtBottom() {
+		Figure figure = _state.figure;
+		figure.data = new int[][] {
+				{0,0,0,0},	
+				{0,0,0,0},	
+				{0,0,0,0},	
+				{1,1,1,1},	
+		};
+		_state.figureRow = _state.field.box.length - 4; 
+		_state.figureColumn = 0;
+	}
+	
+	@Test
+	public void testMoveDownInFilledBox() throws Exception {
+		Figure figure = _state.figure;
+		figure.data = new int[][] {
+				{0,0,0,0},	
+				{0,0,1,0},	
+				{0,1,1,1},	
+				{0,0,0,0},	
+		};
+		int row = _state.figureRow = _state.field.box.length - 4;
+		_state.figureColumn = 0;
+		
+		int[][] b = _state.field.box;
+		
+		b[b.length - 1][1] = 1;
+		
+		_logic.moveDown();
+		
+		assertEquals(0, _state.figureRow);
+	}
+	
 }
