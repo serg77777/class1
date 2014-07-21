@@ -49,4 +49,16 @@ public class State {
 		}
 	}
 
+	public Field getField() {
+		return field;
+	}
+
+	public Figure getFigure() {
+		return figure;
+	}
+
+	public void removeFullRows() {
+		field.removeFullRows();
+	}
+
 }

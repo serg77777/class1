@@ -40,6 +40,7 @@ public class Logic implements EventProcessor {
 	public void moveDown() {
 		if (!state.canMoveDown()) {
 			state.pasteFigure();
+			state.removeFullRows();
 			state.nextFigure();
 			return;
 		}

@@ -1,54 +1,90 @@
 package tetris;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics2D;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+public class View implements PlatformKeyListener {
 
-public class View {
+	private static int CELL_SIZE = 30;
+
+	private int _fieldHeight;
+	private int _fieldWidth;
+	private int _fieldOffsetX;
+	private int _fieldOffsetY;
+
+	private Platform _platform;
 
 	private EventProcessor _processor;
-	private JFrame _frame;
-	private JPanel _panel;
 
-	public View(JFrame frame) {
-		_frame = frame;
-
-		_panel = new JPanel();
-		_panel.setPreferredSize(new Dimension(400, 700));
-		frame.add(_panel);
-
-		_frame.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-				System.out.println(e);
-				switch (e.getKeyCode()) {
-				case KeyEvent.VK_LEFT:
-					_processor.moveLeft();
-					break;
-				case KeyEvent.VK_RIGHT:
-					_processor.moveRight();
-					break;
-				}
-			}
-		});
-
+	public View(Platform platform) {
+		_platform = platform;
+		_platform.setKeyListener(this);
 	}
 
 	public void updateState(State state) {
-		Graphics2D g = (Graphics2D) _panel.getGraphics();
-		g.clearRect(0, 0, _panel.getWidth(), _panel.getHeight());
-		g.setColor(Color.black);
-		g.fillRect(state.figureColumn * 30, state.figureRow * 30, 30, 30);
+		if (_fieldHeight == 0) { // Lazy Initialization
+			calculateFieldDimensions(state.getField());
+		}
+		
+		_platform.clearArea();
+		drawField(state.getField());
+		drawFigure(state);
+	}
+
+	private void drawFigure(State state) {
+
+		int[][] matrix = state.getFigure().getData();
+		int rowShift = state.figureRow;
+		int columnShift = state.figureColumn;
+
+		drawMatrix(matrix, rowShift, columnShift);
+
+	}
+
+	private void drawField(Field field) {
+		
+		_platform.fillRect(_platform.backgroundColorIndex(),_fieldOffsetX, _fieldOffsetY, _fieldWidth, _fieldHeight);
+		
+		int[][] matrix = field.box;
+		
+		drawMatrix(matrix, 0, 0);
+	}
+
+	private void drawMatrix(int[][] matrix, int rowShift,
+			int columnShift) {
+		for (int r = 0; r < matrix.length; r++) {
+			for (int c = 0; c < matrix[r].length; c++) {
+				if (matrix[r][c] == 0) {
+					continue;
+				}
+				drawCell(matrix[r][c], rowShift + r, columnShift + c);
+			}
+		}
+	}
+
+	private void drawCell(int colorIndex, int row, int col) {
+		_platform.fillRect(colorIndex, col * CELL_SIZE + _fieldOffsetX, row * CELL_SIZE
+				+ _fieldOffsetY, CELL_SIZE, CELL_SIZE);
+	}
+
+
+	private void calculateFieldDimensions(Field field) {
+		_fieldHeight = field.getRows() * CELL_SIZE;
+		_fieldWidth = field.getColumns() * CELL_SIZE;
+		_fieldOffsetX = (_platform.getWidth() - _fieldWidth) / 2;
+		_fieldOffsetY = (_platform.getHeight() - _fieldHeight) / 2;
 	}
 
 	public void setListener(EventProcessor processor) {
 		_processor = processor;
+	}
+
+	@Override
+	public void moveLeft() {
+		_processor.moveLeft();
+	}
+
+	@Override
+	public void moveRight() {
+		_processor.moveRight();
 	}
 
 }

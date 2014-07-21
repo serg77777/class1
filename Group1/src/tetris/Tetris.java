@@ -15,8 +15,11 @@ public class Tetris {
 		
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
+		JavaPlatform platform = new JavaPlatform();
 		
-		View view = new View(frame);
+		View view = new View(platform);
+		
+		platform.init(frame, view);
 		
 		frame.pack();
 		frame.setVisible(true);
